@@ -1,13 +1,13 @@
-import { useState } from "react";
-
 import "./Editor.css";
 
-const Editor = () => {
-  const [editorText, setEditorText] = useState(
-    "This is a sentence. This is another."
-  );
+const INITIAL_TEXT = "This is a sentence. This is another.";
 
-  return <div className="Editor">{editorText}</div>;
+const Editor = () => {
+  return (
+    <div className="Editor" contentEditable suppressContentEditableWarning>
+      {INITIAL_TEXT}
+    </div>
+  );
 };
 
 export default Editor;
