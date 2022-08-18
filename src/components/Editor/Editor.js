@@ -1,10 +1,14 @@
+import sentencize from "../../helpers/sentencize";
+
 import "./Editor.css";
 
 const INITIAL_TEXT = "This is a sentence. This is another.";
 
 const Editor = () => {
-  const handleInput = (event) => {
-    const { data: text, inputType: type } = event.nativeEvent;
+  const handleInput = ({
+    nativeEvent: { data: text, inputType: type },
+    target: { textContent },
+  }) => {
     const { anchorOffset: start, focusOffset: end } = document.getSelection();
     const diffEvent = {
       end,
@@ -12,7 +16,14 @@ const Editor = () => {
       text,
       type,
     };
-    console.log("handleInput: ", diffEvent);
+    const sentences = sentencize(textContent);
+
+    console.log("diffEvent: ", diffEvent);
+    console.log("sentences: ", sentences);
+
+    // onChange(diffEvent);
+    // updateState(sentences);
+    // displayState();
   };
 
   return (
