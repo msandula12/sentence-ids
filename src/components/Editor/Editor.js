@@ -12,9 +12,8 @@ const Editor = ({ editorState, setEditorState }) => {
 
   // Effects
   useEffect(() => {
-    for (let i = 0; i < sentences.length; i++) {
-      const sentence = sentences[i];
-      const offset = sentence.offset;
+    sentences.forEach((sentence) => {
+      const { offset } = sentence;
       sentence.updatable = false;
       if (!editorState[offset]) {
         setEditorState((currentState) => {
@@ -33,17 +32,17 @@ const Editor = ({ editorState, setEditorState }) => {
           };
         });
       }
-    }
-    for (let key in editorState) {
-      if (editorState[key].updatable) {
+    });
+    Object.keys(editorState).forEach((sentenceStart) => {
+      if (editorState[sentenceStart].updatable) {
         // Sentence was marked for update, but no update (changed too much to retain id): Delete it
         setEditorState((currentState) => {
           const copy = { ...currentState };
-          delete copy[key];
+          delete copy[sentenceStart];
           return copy;
         });
       }
-    }
+    });
   }, [editorState, sentences, setEditorState]);
 
   const setUpdatables = (startIndex, endIndex) => {
