@@ -13,8 +13,8 @@ const Editor = ({ editorState, setEditorState }) => {
   // Effects
   useEffect(() => {
     for (let i = 0; i < sentences.length; i++) {
-      let sentence = sentences[i];
-      let offset = sentence.offset;
+      const sentence = sentences[i];
+      const offset = sentence.offset;
       sentence.updatable = false;
       if (!editorState[offset]) {
         setEditorState((currentState) => {
@@ -24,7 +24,7 @@ const Editor = ({ editorState, setEditorState }) => {
           };
         });
       } else if (editorState[offset].updatable) {
-        // sentence already existed but changed, keep id
+        // Sentence already existed, but changed: Keep id
         sentence.id = editorState[offset].id;
         setEditorState((currentState) => {
           return {
@@ -36,8 +36,7 @@ const Editor = ({ editorState, setEditorState }) => {
     }
     for (let key in editorState) {
       if (editorState[key].updatable) {
-        // sentence was marked for update but no update--changed too much to retain id
-        // delete it
+        // Sentence was marked for update, but no update (changed too much to retain id): Delete it
         setEditorState((currentState) => {
           const copy = { ...currentState };
           delete copy[key];
@@ -69,7 +68,7 @@ const Editor = ({ editorState, setEditorState }) => {
   const updateStateOffsets = (lengthChange, endIndex) => {
     console.log("lengthChange: ", lengthChange);
     console.log("endIndex: ", endIndex);
-    let toUpdate = [];
+    const toUpdate = [];
     for (let key in editorState) {
       if (key > endIndex) {
         setEditorState((currentState) => {
@@ -88,9 +87,8 @@ const Editor = ({ editorState, setEditorState }) => {
       }
     }
     for (let i = 0; i < toUpdate.length; i++) {
-      let updatable = toUpdate[i];
-      let sentence = updatable.sentence;
-      let oldOffset = updatable.oldOffset;
+      const updatable = toUpdate[i];
+      const { oldOffset, sentence } = updatable;
       console.log(
         `Moving sentence "${sentence.sentence}" from offset ${oldOffset} to offset ${sentence.offset}`
       );
@@ -123,39 +121,39 @@ const Editor = ({ editorState, setEditorState }) => {
     if (diffEvent.type === "deleteContentBackward") {
       let deleteLength = diffEvent.end - diffEvent.start;
       if (deleteLength === 0) {
-        // wasn't a selection, just a delete
+        // Wasn't a selection, just a delete
         deleteLength = 1;
-        // backward deletion, extend start
+        // Backward deletion, extend start
         diffEvent.start -= 1;
-        // handle sentence fusion
+        // Handle sentence fusion
         diffEvent.end += 1;
       }
-      let lengthChange = -deleteLength;
+      const lengthChange = -deleteLength;
       updateStateOffsets(lengthChange, diffEvent.end);
       setUpdatables(diffEvent.start, diffEvent.end);
     } else if (diffEvent.type === "deleteContentForward") {
       let deleteLength = diffEvent.end - diffEvent.start;
       if (deleteLength === 0) {
-        // wasn't a selection, just a delete
+        // Wasn't a selection, just a delete
         deleteLength = 1;
-        // forward deletion, extend end
+        // Forward deletion, extend end
         diffEvent.end += 1;
-        // handle sentence fusion
+        // Handle sentence fusion
         diffEvent.end += 1;
       }
-      let lengthChange = -deleteLength;
+      const lengthChange = -deleteLength;
       updateStateOffsets(lengthChange, diffEvent.end);
       setUpdatables(diffEvent.start, diffEvent.end);
     } else if (diffEvent.type === "insertLineBreak") {
-      let insertLength = 1;
-      let deleteLength = diffEvent.end - diffEvent.start;
-      let lengthChange = insertLength - deleteLength;
+      const insertLength = 1;
+      const deleteLength = diffEvent.end - diffEvent.start;
+      const lengthChange = insertLength - deleteLength;
       updateStateOffsets(lengthChange, diffEvent.end);
       setUpdatables(diffEvent.start, diffEvent.end + 1); // +1 so we update the next sentence
     } else {
-      let insertLength = diffEvent.text ? diffEvent.text.length : 0;
-      let deleteLength = diffEvent.end - diffEvent.start;
-      let lengthChange = insertLength - deleteLength;
+      const insertLength = diffEvent.text ? diffEvent.text.length : 0;
+      const deleteLength = diffEvent.end - diffEvent.start;
+      const lengthChange = insertLength - deleteLength;
       updateStateOffsets(lengthChange, diffEvent.end);
       setUpdatables(
         diffEvent.start,
