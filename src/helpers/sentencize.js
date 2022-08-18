@@ -1,17 +1,17 @@
 import { nanoid } from "nanoid";
 
+const sentenceEndings = new Set([".", "?", "!", "\n"]);
+
 /**
  * Takes a string and returns a list of sentence objects.
  */
 const sentencize = (text) => {
-  const sentenceEndings = [".", "?", "!", "\n"];
-
-  let sentences = [];
-  let offsets = [];
+  const sentences = [];
+  const offsets = [];
   let sentenceStart = 0;
 
   for (let i = 0; i < text.length; i++) {
-    if (sentenceEndings.includes(text[i])) {
+    if (sentenceEndings.has(text[i])) {
       sentences.push(text.substring(sentenceStart, i + 1));
       offsets.push(sentenceStart);
       sentenceStart = i + 1;
@@ -23,20 +23,12 @@ const sentencize = (text) => {
     offsets.push(sentenceStart);
   }
 
-  let results = [];
-
-  for (let i = 0; i < sentences.length; i++) {
-    let sentence = sentences[i];
-    let offset = offsets[i];
-    results.push({
-      id: nanoid(),
-      length: sentence.length,
-      offset,
-      sentence,
-    });
-  }
-
-  return results;
+  return sentences.map((sentence, index) => ({
+    id: nanoid(),
+    length: sentence.length,
+    offset: offsets[index],
+    sentence,
+  }));
 };
 
 export default sentencize;
