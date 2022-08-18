@@ -1,5 +1,5 @@
-import Editor from "./Editor";
-import Output from "./Output";
+import Editor from "../Editor";
+import Output from "../Output";
 
 import "./App.css";
 
