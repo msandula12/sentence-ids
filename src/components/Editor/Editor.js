@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./Editor.css";
 
 import sentencize from "../../helpers/sentencize";
 
 const Editor = ({ editorState, setEditorState }) => {
+  // State
   const [end, setEnd] = useState(0);
   const [start, setStart] = useState(0);
+  const [sentences, setSentences] = useState([]);
 
-  const updateState = (sentences) => {
+  // Effects
+  useEffect(() => {
     for (let i = 0; i < sentences.length; i++) {
       let sentence = sentences[i];
       let offset = sentence.offset;
@@ -42,7 +45,7 @@ const Editor = ({ editorState, setEditorState }) => {
         });
       }
     }
-  };
+  }, [editorState, sentences, setEditorState]);
 
   const setUpdatables = (startIndex, endIndex) => {
     console.log(`setUpdatables range: ${startIndex}-${endIndex}`);
@@ -177,9 +180,9 @@ const Editor = ({ editorState, setEditorState }) => {
       text,
       type,
     };
-    const sentences = sentencize(textContent);
+    const currentSentences = sentencize(textContent);
+    setSentences(currentSentences);
     onChange(diffEvent);
-    updateState(sentences);
   };
 
   return (
