@@ -4,6 +4,15 @@ import "./Editor.css";
 
 import sentencize from "../../helpers/sentencize";
 
+const supportedInputTypes = new Set([
+  "deleteByCut",
+  "deleteContentBackward",
+  "deleteContentForward",
+  "insertFromPaste",
+  "insertLineBreak",
+  "insertText",
+]);
+
 const Editor = ({ editorState, setEditorState }) => {
   // State
   const [end, setEnd] = useState(0);
@@ -99,15 +108,7 @@ const Editor = ({ editorState, setEditorState }) => {
   };
 
   const onChange = (inputEvent) => {
-    const supportedInputTypes = [
-      "deleteByCut",
-      "deleteContentBackward",
-      "deleteContentForward",
-      "insertFromPaste",
-      "insertLineBreak",
-      "insertText",
-    ];
-    if (!supportedInputTypes.includes(inputEvent.type)) {
+    if (!supportedInputTypes.has(inputEvent.type)) {
       console.warn(
         `Unsupported input type: "${inputEvent.type}", attempting to proceed...`
       );
