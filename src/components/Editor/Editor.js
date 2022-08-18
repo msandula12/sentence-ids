@@ -184,7 +184,6 @@ const Editor = ({ editorState, setEditorState }) => {
       contentEditable
       onBeforeInput={handleBeforeInput}
       onInput={handleInput}
-      suppressContentEditableWarning
     />
   );
 };
