@@ -100,12 +100,12 @@ const Editor = ({ editorState, setEditorState }) => {
 
   const onChange = (inputEvent) => {
     const supportedInputTypes = [
-      "insertText",
-      "insertFromPaste",
       "deleteByCut",
       "deleteContentBackward",
       "deleteContentForward",
+      "insertFromPaste",
       "insertLineBreak",
+      "insertText",
     ];
     if (!supportedInputTypes.includes(inputEvent.type)) {
       console.warn(
