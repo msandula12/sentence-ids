@@ -1,33 +1,40 @@
-import sentencize from "../../helpers/sentencize";
-
 import "./Editor.css";
 
-const INITIAL_TEXT = "This is a sentence. This is another.";
+import sentencize from "../../helpers/sentencize";
 
-const Editor = () => {
-  let editorState = {};
-
+const Editor = ({ editorState, setEditorState }) => {
   const updateState = (sentences) => {
     for (let i = 0; i < sentences.length; i++) {
       let sentence = sentences[i];
       let offset = sentence.offset;
       sentence.updatable = false;
-      if (!(offset in editorState)) {
-        editorState[offset] = sentence;
+      if (!editorState[offset]) {
+        setEditorState((currentState) => {
+          return {
+            ...currentState,
+            [offset]: sentence,
+          };
+        });
       } else if (editorState[offset].updatable) {
-        //sentence already existed but changed, keep id
+        // sentence already existed but changed, keep id
         sentence.id = editorState[offset].id;
-        editorState[offset] = sentence;
-      } else {
-        //noop
-        //this sentence already existed
+        setEditorState((currentState) => {
+          return {
+            ...currentState,
+            [offset]: sentence,
+          };
+        });
       }
     }
     for (let key in editorState) {
       if (editorState[key].updatable) {
         // sentence was marked for update but no update--changed too much to retain id
         // delete it
-        delete editorState[key];
+        setEditorState((currentState) => {
+          const copy = { ...currentState };
+          delete copy[key];
+          return copy;
+        });
       }
     }
   };
@@ -38,7 +45,15 @@ const Editor = () => {
       const sentenceStart = key;
       const sentenceEnd = key + editorState[key].sentence.length;
       if (sentenceEnd >= startIndex && sentenceStart < endIndex) {
-        editorState[key].updatable = true;
+        setEditorState((currentState) => {
+          return {
+            ...currentState,
+            [key]: {
+              ...currentState[key],
+              updatable: true,
+            },
+          };
+        });
       }
     }
   };
@@ -49,7 +64,15 @@ const Editor = () => {
     let toUpdate = [];
     for (let key in editorState) {
       if (key > endIndex) {
-        editorState[key].offset += lengthChange;
+        setEditorState((currentState) => {
+          return {
+            ...currentState,
+            [key]: {
+              ...currentState[key],
+              offset: currentState[key].offset + lengthChange,
+            },
+          };
+        });
         toUpdate.push({
           oldOffset: key,
           sentence: editorState[key],
@@ -63,8 +86,14 @@ const Editor = () => {
       console.log(
         `Moving sentence "${sentence.sentence}" from offset ${oldOffset} to offset ${sentence.offset}`
       );
-      delete editorState[oldOffset];
-      editorState[sentence.offset] = sentence;
+      setEditorState((currentState) => {
+        const copy = { ...currentState };
+        delete copy[oldOffset];
+        return {
+          ...copy,
+          [sentence.offset]: sentence,
+        };
+      });
     }
   };
 
@@ -148,17 +177,12 @@ const Editor = () => {
   };
 
   return (
-    <>
-      <div
-        className="Editor"
-        contentEditable
-        onInput={handleInput}
-        suppressContentEditableWarning
-      >
-        {INITIAL_TEXT}
-      </div>
-      <pre>{JSON.stringify(editorState, null, 2)}</pre>
-    </>
+    <div
+      className="Editor"
+      contentEditable
+      onInput={handleInput}
+      suppressContentEditableWarning
+    />
   );
 };
 
