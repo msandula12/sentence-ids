@@ -31,8 +31,8 @@ const sentencize = (text) => {
     results.push({
       id: nanoid(),
       length: sentence.length,
-      offset: offset,
-      sentence: sentence,
+      offset,
+      sentence,
     });
   }
 
