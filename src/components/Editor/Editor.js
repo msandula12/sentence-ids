@@ -47,47 +47,43 @@ const Editor = ({ editorState, setEditorState }) => {
   }, [editorState, sentences, setEditorState]);
 
   const setUpdatables = (startIndex, endIndex) => {
-    console.log(`setUpdatables range: ${startIndex}-${endIndex}`);
-    for (let key in editorState) {
-      const sentenceStart = key;
-      const sentenceEnd = key + editorState[key].sentence.length;
+    Object.keys(editorState).forEach((sentenceStart) => {
+      const sentenceEnd =
+        sentenceStart + editorState[sentenceStart].sentence.length;
       if (sentenceEnd >= startIndex && sentenceStart < endIndex) {
         setEditorState((currentState) => {
           return {
             ...currentState,
-            [key]: {
-              ...currentState[key],
+            [sentenceStart]: {
+              ...currentState[sentenceStart],
               updatable: true,
             },
           };
         });
       }
-    }
+    });
   };
 
   const updateStateOffsets = (lengthChange, endIndex) => {
-    console.log("lengthChange: ", lengthChange);
-    console.log("endIndex: ", endIndex);
     const toUpdate = [];
-    for (let key in editorState) {
-      if (key > endIndex) {
+    Object.keys(editorState).forEach((sentenceStart) => {
+      if (sentenceStart > endIndex) {
         setEditorState((currentState) => {
           return {
             ...currentState,
-            [key]: {
-              ...currentState[key],
-              offset: currentState[key].offset + lengthChange,
+            [sentenceStart]: {
+              ...currentState[sentenceStart],
+              offset: currentState[sentenceStart].offset + lengthChange,
             },
           };
         });
         toUpdate.push({
-          oldOffset: key,
-          sentence: editorState[key],
+          oldOffset: sentenceStart,
+          sentence: editorState[sentenceStart],
         });
       }
-    }
-    for (let i = 0; i < toUpdate.length; i++) {
-      const updatable = toUpdate[i];
+    });
+    toUpdate.forEach((updatable) => {
       const { oldOffset, sentence } = updatable;
       console.log(
         `Moving sentence "${sentence.sentence}" from offset ${oldOffset} to offset ${sentence.offset}`
@@ -100,11 +96,10 @@ const Editor = ({ editorState, setEditorState }) => {
           [sentence.offset]: sentence,
         };
       });
-    }
+    });
   };
 
-  const onChange = (diffEvent) => {
-    console.log("onChange: ", diffEvent);
+  const onChange = (inputEvent) => {
     const supportedInputTypes = [
       "insertText",
       "insertFromPaste",
@@ -113,51 +108,51 @@ const Editor = ({ editorState, setEditorState }) => {
       "deleteContentForward",
       "insertLineBreak",
     ];
-    if (!supportedInputTypes.includes(diffEvent.type)) {
+    if (!supportedInputTypes.includes(inputEvent.type)) {
       console.warn(
-        `Unsupported input type: "${diffEvent.type}", attempting to proceed...`
+        `Unsupported input type: "${inputEvent.type}", attempting to proceed...`
       );
     }
-    if (diffEvent.type === "deleteContentBackward") {
-      let deleteLength = diffEvent.end - diffEvent.start;
+    if (inputEvent.type === "deleteContentBackward") {
+      let deleteLength = inputEvent.end - inputEvent.start;
       if (deleteLength === 0) {
         // Wasn't a selection, just a delete
         deleteLength = 1;
         // Backward deletion, extend start
-        diffEvent.start -= 1;
+        inputEvent.start -= 1;
         // Handle sentence fusion
-        diffEvent.end += 1;
+        inputEvent.end += 1;
       }
       const lengthChange = -deleteLength;
-      updateStateOffsets(lengthChange, diffEvent.end);
-      setUpdatables(diffEvent.start, diffEvent.end);
-    } else if (diffEvent.type === "deleteContentForward") {
-      let deleteLength = diffEvent.end - diffEvent.start;
+      updateStateOffsets(lengthChange, inputEvent.end);
+      setUpdatables(inputEvent.start, inputEvent.end);
+    } else if (inputEvent.type === "deleteContentForward") {
+      let deleteLength = inputEvent.end - inputEvent.start;
       if (deleteLength === 0) {
         // Wasn't a selection, just a delete
         deleteLength = 1;
         // Forward deletion, extend end
-        diffEvent.end += 1;
+        inputEvent.end += 1;
         // Handle sentence fusion
-        diffEvent.end += 1;
+        inputEvent.end += 1;
       }
       const lengthChange = -deleteLength;
-      updateStateOffsets(lengthChange, diffEvent.end);
-      setUpdatables(diffEvent.start, diffEvent.end);
-    } else if (diffEvent.type === "insertLineBreak") {
+      updateStateOffsets(lengthChange, inputEvent.end);
+      setUpdatables(inputEvent.start, inputEvent.end);
+    } else if (inputEvent.type === "insertLineBreak") {
       const insertLength = 1;
-      const deleteLength = diffEvent.end - diffEvent.start;
+      const deleteLength = inputEvent.end - inputEvent.start;
       const lengthChange = insertLength - deleteLength;
-      updateStateOffsets(lengthChange, diffEvent.end);
-      setUpdatables(diffEvent.start, diffEvent.end + 1); // +1 so we update the next sentence
+      updateStateOffsets(lengthChange, inputEvent.end);
+      setUpdatables(inputEvent.start, inputEvent.end + 1); // +1 so we update the next sentence
     } else {
-      const insertLength = diffEvent.text ? diffEvent.text.length : 0;
-      const deleteLength = diffEvent.end - diffEvent.start;
+      const insertLength = inputEvent.text ? inputEvent.text.length : 0;
+      const deleteLength = inputEvent.end - inputEvent.start;
       const lengthChange = insertLength - deleteLength;
-      updateStateOffsets(lengthChange, diffEvent.end);
+      updateStateOffsets(lengthChange, inputEvent.end);
       setUpdatables(
-        diffEvent.start,
-        diffEvent.end + 1 // +1 so we update the next sentence
+        inputEvent.start,
+        inputEvent.end + 1 // +1 so we update the next sentence
       );
     }
   };
@@ -172,7 +167,7 @@ const Editor = ({ editorState, setEditorState }) => {
     nativeEvent: { data: text, inputType: type },
     target: { textContent },
   }) => {
-    const diffEvent = {
+    const inputEvent = {
       end,
       start,
       text,
@@ -180,7 +175,7 @@ const Editor = ({ editorState, setEditorState }) => {
     };
     const currentSentences = sentencize(textContent);
     setSentences(currentSentences);
-    onChange(diffEvent);
+    onChange(inputEvent);
   };
 
   return (
