@@ -1,5 +1,7 @@
+import "./Output.css";
+
 const Output = ({ editorState }) => {
-  return <pre>{JSON.stringify(editorState, null, 2)}</pre>;
+  return <pre className="Output">{JSON.stringify(editorState, null, 2)}</pre>;
 };
 
 export default Output;
