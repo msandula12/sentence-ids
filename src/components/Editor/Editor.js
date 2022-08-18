@@ -1,8 +1,13 @@
+import { useState } from "react";
+
 import "./Editor.css";
 
 import sentencize from "../../helpers/sentencize";
 
 const Editor = ({ editorState, setEditorState }) => {
+  const [end, setEnd] = useState(0);
+  const [start, setStart] = useState(0);
+
   const updateState = (sentences) => {
     for (let i = 0; i < sentences.length; i++) {
       let sentence = sentences[i];
@@ -156,11 +161,16 @@ const Editor = ({ editorState, setEditorState }) => {
     }
   };
 
+  const handleBeforeInput = () => {
+    const { anchorOffset, focusOffset } = document.getSelection();
+    setStart(anchorOffset);
+    setEnd(focusOffset);
+  };
+
   const handleInput = ({
     nativeEvent: { data: text, inputType: type },
     target: { textContent },
   }) => {
-    const { anchorOffset: start, focusOffset: end } = document.getSelection();
     const diffEvent = {
       end,
       start,
@@ -168,10 +178,6 @@ const Editor = ({ editorState, setEditorState }) => {
       type,
     };
     const sentences = sentencize(textContent);
-
-    console.log("diffEvent: ", diffEvent);
-    console.log("sentences: ", sentences);
-
     onChange(diffEvent);
     updateState(sentences);
   };
@@ -180,6 +186,7 @@ const Editor = ({ editorState, setEditorState }) => {
     <div
       className="Editor"
       contentEditable
+      onBeforeInput={handleBeforeInput}
       onInput={handleInput}
       suppressContentEditableWarning
     />
