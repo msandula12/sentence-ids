@@ -107,52 +107,55 @@ const Editor = ({ editorState, setEditorState }) => {
     });
   };
 
-  const onChange = (inputEvent) => {
-    if (!supportedInputTypes.has(inputEvent.type)) {
+  const onChange = ({ end, start, text, type }) => {
+    if (!supportedInputTypes.has(type)) {
       console.warn(
-        `Unsupported input type: "${inputEvent.type}", attempting to proceed...`
+        `Unsupported input type: "${type}", attempting to proceed...`
       );
     }
-    if (inputEvent.type === "deleteContentBackward") {
-      let deleteLength = inputEvent.end - inputEvent.start;
+    if (type === "deleteContentBackward") {
+      let modifiedEnd = end;
+      let modifiedStart = start;
+      let deleteLength = modifiedEnd - start;
       if (deleteLength === 0) {
         // Wasn't a selection, just a delete
         deleteLength = 1;
         // Backward deletion, extend start
-        inputEvent.start -= 1;
+        modifiedStart -= 1;
         // Handle sentence fusion
-        inputEvent.end += 1;
+        modifiedEnd += 1;
       }
       const lengthChange = -deleteLength;
-      updateStateOffsets(lengthChange, inputEvent.end);
-      setUpdatables(inputEvent.start, inputEvent.end);
-    } else if (inputEvent.type === "deleteContentForward") {
-      let deleteLength = inputEvent.end - inputEvent.start;
+      updateStateOffsets(lengthChange, modifiedEnd);
+      setUpdatables(modifiedStart, modifiedEnd);
+    } else if (type === "deleteContentForward") {
+      let modifiedEnd = end;
+      let deleteLength = modifiedEnd - start;
       if (deleteLength === 0) {
         // Wasn't a selection, just a delete
         deleteLength = 1;
         // Forward deletion, extend end
-        inputEvent.end += 1;
+        modifiedEnd += 1;
         // Handle sentence fusion
-        inputEvent.end += 1;
+        modifiedEnd += 1;
       }
       const lengthChange = -deleteLength;
-      updateStateOffsets(lengthChange, inputEvent.end);
-      setUpdatables(inputEvent.start, inputEvent.end);
-    } else if (inputEvent.type === "insertLineBreak") {
+      updateStateOffsets(lengthChange, modifiedEnd);
+      setUpdatables(start, modifiedEnd);
+    } else if (type === "insertLineBreak") {
       const insertLength = 1;
-      const deleteLength = inputEvent.end - inputEvent.start;
+      const deleteLength = end - start;
       const lengthChange = insertLength - deleteLength;
-      updateStateOffsets(lengthChange, inputEvent.end);
-      setUpdatables(inputEvent.start, inputEvent.end + 1); // +1 so we update the next sentence
+      updateStateOffsets(lengthChange, end);
+      setUpdatables(start, end + 1); // +1 so we update the next sentence
     } else {
-      const insertLength = inputEvent.text ? inputEvent.text.length : 0;
-      const deleteLength = inputEvent.end - inputEvent.start;
+      const insertLength = text ? text.length : 0;
+      const deleteLength = end - start;
       const lengthChange = insertLength - deleteLength;
-      updateStateOffsets(lengthChange, inputEvent.end);
+      updateStateOffsets(lengthChange, end);
       setUpdatables(
-        inputEvent.start,
-        inputEvent.end + 1 // +1 so we update the next sentence
+        start,
+        end + 1 // +1 so we update the next sentence
       );
     }
   };
