@@ -1,34 +1,30 @@
 import { nanoid } from "nanoid";
+import tokenizer from "sbd";
 
-const sentenceEndings = new Set([".", "?", "!", "\n"]);
+/**
+ * Overrides sbd's default options.
+ * https://github.com/Tessmore/sbd
+ */
+const TOKENIZER_OPTIONS = {
+  preserve_whitespace: true,
+};
 
 /**
  * Takes a string and returns a list of sentence objects.
  */
 const sentencize = (text) => {
-  const sentences = [];
-  const offsets = [];
-  let sentenceStart = 0;
+  let offset = 0;
 
-  for (let i = 0; i < text.length; i++) {
-    if (sentenceEndings.has(text[i])) {
-      sentences.push(text.substring(sentenceStart, i + 1));
-      offsets.push(sentenceStart);
-      sentenceStart = i + 1;
-    }
-  }
-
-  if (sentenceStart < text.length) {
-    sentences.push(text.substring(sentenceStart, text.length + 1));
-    offsets.push(sentenceStart);
-  }
-
-  return sentences.map((sentence, index) => ({
-    id: nanoid(),
-    length: sentence.length,
-    offset: offsets[index],
-    sentence,
-  }));
+  return tokenizer.sentences(text, TOKENIZER_OPTIONS).map((sentence) => {
+    const sentencized = {
+      id: nanoid(),
+      length: sentence.length,
+      offset,
+      sentence,
+    };
+    offset += sentence.length;
+    return sentencized;
+  });
 };
 
 export default sentencize;
