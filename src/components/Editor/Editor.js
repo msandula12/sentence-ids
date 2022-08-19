@@ -107,7 +107,7 @@ const Editor = ({ editorState, setEditorState }) => {
     });
   };
 
-  const onChange = ({ end, start, text, type }) => {
+  const onChange = ({ end, inputType, start, text }) => {
     let modifiedEnd = end;
     let modifiedEndForUpdate = end;
     let modifiedStart = start;
@@ -115,13 +115,13 @@ const Editor = ({ editorState, setEditorState }) => {
     let insertLength = 1;
     let lengthChange = -deleteLength;
 
-    if (!supportedInputTypes.has(type)) {
+    if (!supportedInputTypes.has(inputType)) {
       console.warn(
-        `Unsupported input type: "${type}", attempting to proceed...`
+        `Unsupported input type: "${inputType}", attempting to proceed...`
       );
     }
 
-    switch (type) {
+    switch (inputType) {
       case "deleteContentBackward":
         if (deleteLength === 0) {
           // Wasn't a selection, just a delete
@@ -168,14 +168,14 @@ const Editor = ({ editorState, setEditorState }) => {
   };
 
   const handleInput = ({
-    nativeEvent: { data: text, inputType: type },
+    nativeEvent: { data: text, inputType },
     target: { textContent },
   }) => {
     const inputEvent = {
       end,
+      inputType,
       start,
       text,
-      type,
     };
     const currentSentences = sentencize(textContent);
     setSentences(currentSentences);
