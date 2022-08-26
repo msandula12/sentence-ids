@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { createEditor, Editor as SlateEditor } from "slate";
+import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
 
 import "./Editor.css";
 
+import {
+  getCurrentOffset,
+  getCurrentOperation,
+  getEditorText,
+} from "../../helpers/editor";
 import sentencize from "../../helpers/sentencize";
 
 const INITIAL_VALUE = [
@@ -18,7 +23,16 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   const [editor] = useState(() => withReact(createEditor()));
 
   const updateSentencesWithIds = () => {
-    const editorText = SlateEditor.string(editor, []);
+    const editorText = getEditorText(editor);
+    const offset = getCurrentOffset(editor);
+    const operation = getCurrentOperation(editor);
+
+    if (operation.type === "insert_text") {
+      console.log("offset: ", offset);
+    } else if (operation.type === "remove_text") {
+      // TODO
+    }
+
     setSentencesWithIds(sentencize(editorText));
   };
 
