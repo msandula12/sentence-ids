@@ -26,14 +26,26 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
     const editorText = getEditorText(editor);
     const offset = getCurrentOffset(editor);
     const operation = getCurrentOperation(editor);
+    const newSentencesWithIds = sentencize(editorText);
 
     if (operation.type === "insert_text") {
       console.log("offset: ", offset);
+      setSentencesWithIds((previousSentencesWithIds) => {
+        return newSentencesWithIds.map((sentence, index) => {
+          const previousSentenceWithId = previousSentencesWithIds[index];
+          if (previousSentenceWithId) {
+            return {
+              ...sentence,
+              id: previousSentenceWithId.id,
+            };
+          }
+          return sentence;
+        });
+      });
     } else if (operation.type === "remove_text") {
-      // TODO
+      console.log("offset: ", offset);
+      setSentencesWithIds(newSentencesWithIds);
     }
-
-    setSentencesWithIds(sentencize(editorText));
   };
 
   return (
