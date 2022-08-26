@@ -6,12 +6,15 @@ import Output from "../Output";
 import "./App.css";
 
 const App = () => {
-  const [editorState, setEditorState] = useState({});
+  const [sentencesWithIds, setSentencesWithIds] = useState([]);
 
   return (
     <div className="App">
-      <Editor editorState={editorState} setEditorState={setEditorState} />
-      <Output editorState={editorState} />
+      <Editor
+        sentencesWithIds={sentencesWithIds}
+        setSentencesWithIds={setSentencesWithIds}
+      />
+      <Output sentencesWithIds={sentencesWithIds} />
     </div>
   );
 };
