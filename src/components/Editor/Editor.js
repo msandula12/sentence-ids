@@ -4,12 +4,7 @@ import { Editable, Slate, withReact } from "slate-react";
 
 import "./Editor.css";
 
-import {
-  getCurrentOperation,
-  getEditorText,
-  getUpdatedSentences,
-} from "../../helpers/editor";
-import { sentencize } from "../../helpers/sentencize";
+import { getCurrentOperation, getUpdatedSentences } from "../../helpers/editor";
 
 const INITIAL_VALUE = [
   {
@@ -23,14 +18,13 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   const [editor] = useState(() => withReact(createEditor()));
 
   const updateSentencesWithIds = () => {
-    const editorText = getEditorText(editor);
     const operation = getCurrentOperation(editor);
-    const newSentencesWithIds = sentencize(editorText);
     if (operation.type === "insert_text") {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
     } else if (operation.type === "remove_text") {
-      setSentencesWithIds(newSentencesWithIds);
+      const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
+      setSentencesWithIds(updatedSentences);
     }
   };
 
