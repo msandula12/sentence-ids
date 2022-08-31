@@ -1,8 +1,18 @@
 import { Editor } from "slate";
 
-export const getEditorText = (editor) => Editor.string(editor, []);
+export function getCurrentOffset(editor) {
+  return getEditorTextUpToSelection(editor).length;
+}
 
-export const getEditorTextUpToSelection = (editor) => {
+export function getCurrentOperation(editor) {
+  return editor.operations[editor.operations.length - 1];
+}
+
+export function getEditorText(editor) {
+  return Editor.string(editor, []);
+}
+
+export function getEditorTextUpToSelection(editor) {
   if (!editor.selection) return "";
   return Editor.string(editor, {
     anchor: {
@@ -11,10 +21,4 @@ export const getEditorTextUpToSelection = (editor) => {
     },
     focus: editor.selection.focus,
   });
-};
-
-export const getCurrentOffset = (editor) =>
-  getEditorTextUpToSelection(editor).length;
-
-export const getCurrentOperation = (editor) =>
-  editor.operations[editor.operations.length - 1];
+}
