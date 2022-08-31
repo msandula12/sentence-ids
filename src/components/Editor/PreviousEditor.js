@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import "./Editor.css";
 
-import sentencize from "../../helpers/sentencize";
+import { sentencize } from "../../helpers/sentencize";
 
 const supportedInputTypes = new Set([
   "deleteByCut",

@@ -9,7 +9,7 @@ import {
   getCurrentOperation,
   getEditorText,
 } from "../../helpers/editor";
-import sentencize from "../../helpers/sentencize";
+import { sentencize } from "../../helpers/sentencize";
 import { isEmpty } from "../../utils";
 
 const INITIAL_VALUE = [

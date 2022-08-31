@@ -12,7 +12,7 @@ const TOKENIZER_OPTIONS = {
 /**
  * Takes a string and returns a list of sentence objects.
  */
-function sentencize(text) {
+export function sentencize(text) {
   let offset = 0;
 
   return tokenizer.sentences(text, TOKENIZER_OPTIONS).map((sentence) => {
@@ -26,5 +26,3 @@ function sentencize(text) {
     return sentencized;
   });
 }
-
-export default sentencize;
