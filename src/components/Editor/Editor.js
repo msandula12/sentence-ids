@@ -10,6 +10,7 @@ import {
   getEditorText,
 } from "../../helpers/editor";
 import sentencize from "../../helpers/sentencize";
+import { isEmpty } from "../../utils";
 
 const INITIAL_VALUE = [
   {
@@ -27,20 +28,66 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
     const offset = getCurrentOffset(editor);
     const operation = getCurrentOperation(editor);
     const newSentencesWithIds = sentencize(editorText);
-
     if (operation.type === "insert_text") {
+      console.log("%c INSERT TEXT", "color:green");
       console.log("offset: ", offset);
+      console.log("sentences (OLD): ", sentencesWithIds);
+      console.log("sentences (NEW): ", newSentencesWithIds);
+
       setSentencesWithIds((previousSentencesWithIds) => {
-        return newSentencesWithIds.map((sentence, index) => {
-          const previousSentenceWithId = previousSentencesWithIds[index];
-          if (previousSentenceWithId) {
-            return {
-              ...sentence,
-              id: previousSentenceWithId.id,
-            };
+        if (isEmpty(previousSentencesWithIds)) {
+          return newSentencesWithIds;
+        }
+
+        const indexOfChangedSentence = newSentencesWithIds.findIndex(
+          (sentence) => {
+            const start = sentence.offset;
+            const end = start + sentence.length;
+            return start <= offset && offset <= end;
           }
-          return sentence;
-        });
+        );
+
+        const previousSentence =
+          previousSentencesWithIds[indexOfChangedSentence];
+        const currentSentence = newSentencesWithIds[indexOfChangedSentence];
+
+        const sentencesBeforeChange = previousSentencesWithIds.slice(
+          0,
+          indexOfChangedSentence
+        );
+
+        const changedSentence = previousSentence
+          ? {
+              ...currentSentence,
+              id: previousSentence.id,
+            }
+          : currentSentence;
+
+        const sentencesAfterChange = newSentencesWithIds
+          .slice(indexOfChangedSentence + 1)
+          .map((sentence, i) => {
+            const previous =
+              previousSentencesWithIds[indexOfChangedSentence + 1 + i];
+            return previousSentence
+              ? {
+                  ...sentence,
+                  id: previous.id,
+                }
+              : sentence;
+          });
+
+        console.log("indexOfChangedSentence: ", indexOfChangedSentence);
+        console.log("previousSentence: ", previousSentence);
+        console.log("currentSentence: ", currentSentence);
+        console.log("sentencesBeforeChange: ", sentencesBeforeChange);
+        console.log("changedSentence: ", changedSentence);
+        console.log("sentencesAfterChange: ", sentencesAfterChange);
+
+        return [
+          ...sentencesBeforeChange,
+          changedSentence,
+          ...sentencesAfterChange,
+        ];
       });
     } else if (operation.type === "remove_text") {
       console.log("offset: ", offset);
