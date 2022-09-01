@@ -4,175 +4,120 @@ jest.mock("nanoid", () => () => ({
   nanoid: () => {},
 }));
 
+const INITIAL_STATE = [];
+
+const partialSentence = {
+  id: "some-unique-id-1a",
+  length: 1,
+  offset: 0,
+  sentence: "T",
+};
+
+const firstSentence = {
+  id: "some-unique-id-1a",
+  length: 20,
+  offset: 0,
+  sentence: "This is a sentence. ",
+};
+
+const secondSentence = {
+  id: "some-unique-id-2a",
+  length: 20,
+  offset: 20,
+  sentence: "And this is one too.",
+};
+
 describe("updateSentences function", () => {
   it("should return new sentences if no previous sentences", () => {
-    const previousSentences = [];
-    const newSentences = [
-      {
-        id: "some-unique-id-0",
-        length: 1,
-        offset: 0,
-        sentence: "T",
-      },
-    ];
+    const newSentences = [partialSentence];
     const offset = 1;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual(
+    expect(updateSentences(INITIAL_STATE, newSentences, offset)).toEqual(
       newSentences
     );
   });
   it("should keep previous ID when updating existing sentence", () => {
-    const previousSentences = [
-      {
-        id: "some-unique-id-0",
-        length: 1,
-        offset: 0,
-        sentence: "T",
-      },
-    ];
+    const previousSentences = [partialSentence];
     const newSentences = [
       {
-        id: "some-unique-id-1",
+        ...partialSentence,
+        id: "some-unique-id-1b",
         length: 2,
-        offset: 0,
         sentence: "Th",
       },
     ];
     const offset = 2;
     expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
       {
-        id: "some-unique-id-0",
+        ...partialSentence,
         length: 2,
-        offset: 0,
         sentence: "Th",
       },
     ]);
   });
   it("should handle adding a new sentence", () => {
-    const previousSentences = [
-      {
-        id: "some-unique-id-0",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
-      },
-    ];
+    const previousSentences = [firstSentence];
     const newSentences = [
       {
-        id: "some-unique-id-1",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
+        ...firstSentence,
+        id: "some-unique-id-1b",
       },
-      {
-        id: "some-unique-id-2",
-        length: 20,
-        offset: 20,
-        sentence: "And this is one too.",
-      },
+      secondSentence,
     ];
     const offset = 40;
     expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
-      {
-        id: "some-unique-id-0",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
-      },
-      {
-        id: "some-unique-id-2",
-        length: 20,
-        offset: 20,
-        sentence: "And this is one too.",
-      },
+      firstSentence,
+      secondSentence,
     ]);
   });
   it("should keep sentences before offset intact", () => {
-    const previousSentences = [
-      {
-        id: "some-unique-id-0",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
-      },
-      {
-        id: "some-unique-id-1",
-        length: 20,
-        offset: 20,
-        sentence: "And this is one too.",
-      },
-    ];
+    const previousSentences = [firstSentence, secondSentence];
     const newSentences = [
       {
-        id: "some-unique-id-2",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
+        ...firstSentence,
+        id: "some-unique-id-1b",
       },
       {
-        id: "some-unique-id-3",
+        ...secondSentence,
+        id: "some-unique-id-2b",
         length: 21,
-        offset: 20,
         sentence: "Andd this is one too.",
       },
     ];
     const offset = 24;
     expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      firstSentence,
       {
-        id: "some-unique-id-0",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
-      },
-      {
-        id: "some-unique-id-1",
+        ...secondSentence,
         length: 21,
-        offset: 20,
         sentence: "Andd this is one too.",
       },
     ]);
   });
   it("should keep update sentences after offset, but keep previous IDs", () => {
-    const previousSentences = [
-      {
-        id: "some-unique-id-0",
-        length: 20,
-        offset: 0,
-        sentence: "This is a sentence. ",
-      },
-      {
-        id: "some-unique-id-1",
-        length: 20,
-        offset: 20,
-        sentence: "And this is one too.",
-      },
-    ];
+    const previousSentences = [firstSentence, secondSentence];
     const newSentences = [
       {
-        id: "some-unique-id-2",
+        ...firstSentence,
+        id: "some-unique-id-1b",
         length: 21,
-        offset: 0,
         sentence: "This is an sentence. ",
       },
       {
-        id: "some-unique-id-3",
-        length: 20,
+        ...secondSentence,
+        id: "some-unique-id-2b",
         offset: 21,
-        sentence: "And this is one too.",
       },
     ];
     const offset = 10;
     expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
       {
-        id: "some-unique-id-0",
+        ...firstSentence,
         length: 21,
-        offset: 0,
         sentence: "This is an sentence. ",
       },
       {
-        id: "some-unique-id-1",
-        length: 20,
+        ...secondSentence,
         offset: 21,
-        sentence: "And this is one too.",
       },
     ]);
   });
