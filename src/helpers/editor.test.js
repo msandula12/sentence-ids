@@ -86,4 +86,11 @@ describe("updateSentences function", () => {
       },
     ]);
   });
+  it.skip("should keep sentences before offset intact", () => {});
+  it.skip("should keep previous IDs of sentences after offset", () => {});
+  it.skip("should handle multiple paragraphs", () => {});
+  it.skip("should handle deleting a single character", () => {});
+  it.skip("should handle deleting a sentence", () => {});
+  it.skip("should handle pasting text", () => {});
+  it.skip("should handle cutting text", () => {});
 });
