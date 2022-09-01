@@ -122,7 +122,25 @@ describe("updateSentences function", () => {
     ]);
   });
   it.skip("should handle multiple paragraphs", () => {});
-  it.skip("should handle deleting a single character", () => {});
+  it("should handle deleting a single character", () => {
+    const previousSentences = [firstSentence];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+        length: 19,
+        sentence: "Thi is a sentence. ",
+      },
+    ];
+    const offset = 3;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      {
+        ...firstSentence,
+        length: 19,
+        sentence: "Thi is a sentence. ",
+      },
+    ]);
+  });
   it.skip("should handle deleting a sentence", () => {});
   it.skip("should handle merging two sentences", () => {});
   it.skip("should handle pasting text", () => {});
