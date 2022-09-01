@@ -182,6 +182,42 @@ describe("updateSentences function", () => {
     ]);
   });
   it.skip("should handle merging two sentences from different paragraphs", () => {});
-  it.skip("should handle pasting text", () => {});
-  it.skip("should handle cutting text", () => {});
+  it("should handle pasting text", () => {
+    const previousSentences = [firstSentence];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+        length: 24,
+        sentence: "This is a new sentence. ",
+      },
+    ];
+    const offset = 10;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      {
+        ...firstSentence,
+        length: 24,
+        sentence: "This is a new sentence. ",
+      },
+    ]);
+  });
+  it("should handle cutting text", () => {
+    const previousSentences = [
+      {
+        ...firstSentence,
+        length: 24,
+        sentence: "This is a new sentence. ",
+      },
+    ];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+      },
+    ];
+    const offset = 10;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      firstSentence,
+    ]);
+  });
 });
