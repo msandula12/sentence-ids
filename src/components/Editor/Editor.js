@@ -6,6 +6,8 @@ import "./Editor.css";
 
 import { getCurrentOperation, getUpdatedSentences } from "../../helpers/editor";
 
+const updatableOperations = new Set(["insert_text", "remove_text"]);
+
 const INITIAL_VALUE = [
   {
     children: [{ text: "" }],
@@ -19,10 +21,7 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
 
   const updateSentencesWithIds = () => {
     const operation = getCurrentOperation(editor);
-    if (operation.type === "insert_text") {
-      const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
-      setSentencesWithIds(updatedSentences);
-    } else if (operation.type === "remove_text") {
+    if (updatableOperations.has(operation.type)) {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
     }
