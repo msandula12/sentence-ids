@@ -72,12 +72,5 @@ export function updateSentences(previousSentences, newSentences, offset) {
         : sentence;
     });
 
-  console.log("indexOfChangedSentence: ", indexOfChangedSentence);
-  console.log("previousSentence: ", previousSentence);
-  console.log("currentSentence: ", currentSentence);
-  console.log("sentencesBeforeChange: ", sentencesBeforeChange);
-  console.log("changedSentence: ", changedSentence);
-  console.log("sentencesAfterChange: ", sentencesAfterChange);
-
   return [...sentencesBeforeChange, changedSentence, ...sentencesAfterChange];
 }
