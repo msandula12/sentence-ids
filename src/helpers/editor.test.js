@@ -86,8 +86,96 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it.skip("should keep sentences before offset intact", () => {});
-  it.skip("should keep previous IDs of sentences after offset", () => {});
+  it("should keep sentences before offset intact", () => {
+    const previousSentences = [
+      {
+        id: "some-unique-id-0",
+        length: 20,
+        offset: 0,
+        sentence: "This is a sentence. ",
+      },
+      {
+        id: "some-unique-id-1",
+        length: 20,
+        offset: 20,
+        sentence: "And this is one too.",
+      },
+    ];
+    const newSentences = [
+      {
+        id: "some-unique-id-2",
+        length: 20,
+        offset: 0,
+        sentence: "This is a sentence. ",
+      },
+      {
+        id: "some-unique-id-3",
+        length: 21,
+        offset: 20,
+        sentence: "Andd this is one too.",
+      },
+    ];
+    const offset = 24;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      {
+        id: "some-unique-id-0",
+        length: 20,
+        offset: 0,
+        sentence: "This is a sentence. ",
+      },
+      {
+        id: "some-unique-id-1",
+        length: 21,
+        offset: 20,
+        sentence: "Andd this is one too.",
+      },
+    ]);
+  });
+  it("should keep update sentences after offset, but keep previous IDs", () => {
+    const previousSentences = [
+      {
+        id: "some-unique-id-0",
+        length: 20,
+        offset: 0,
+        sentence: "This is a sentence. ",
+      },
+      {
+        id: "some-unique-id-1",
+        length: 20,
+        offset: 20,
+        sentence: "And this is one too.",
+      },
+    ];
+    const newSentences = [
+      {
+        id: "some-unique-id-2",
+        length: 21,
+        offset: 0,
+        sentence: "This is an sentence. ",
+      },
+      {
+        id: "some-unique-id-3",
+        length: 20,
+        offset: 21,
+        sentence: "And this is one too.",
+      },
+    ];
+    const offset = 10;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      {
+        id: "some-unique-id-0",
+        length: 21,
+        offset: 0,
+        sentence: "This is an sentence. ",
+      },
+      {
+        id: "some-unique-id-1",
+        length: 20,
+        offset: 21,
+        sentence: "And this is one too.",
+      },
+    ]);
+  });
   it.skip("should handle multiple paragraphs", () => {});
   it.skip("should handle deleting a single character", () => {});
   it.skip("should handle deleting a sentence", () => {});
