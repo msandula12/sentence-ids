@@ -179,6 +179,7 @@ describe("updateSentences function", () => {
   it.skip("should handle multiple paragraphs", () => {});
   it.skip("should handle deleting a single character", () => {});
   it.skip("should handle deleting a sentence", () => {});
+  it.skip("should handle merging two sentences", () => {});
   it.skip("should handle pasting text", () => {});
   it.skip("should handle cutting text", () => {});
 });
