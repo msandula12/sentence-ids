@@ -141,8 +141,46 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it.skip("should handle deleting a sentence", () => {});
-  it.skip("should handle merging two sentences", () => {});
+  it("should handle deleting a sentence", () => {
+    const previousSentences = [
+      firstSentence,
+      {
+        id: "some-unique-id-2a",
+        length: 1,
+        offset: 20,
+        sentence: "A",
+      },
+    ];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+      },
+    ];
+    const offset = 20;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      firstSentence,
+    ]);
+  });
+  it("should handle merging two sentences", () => {
+    const previousSentences = [firstSentence, secondSentence];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-2a",
+        length: 39,
+        sentence: "This is a sentence And this is one too.",
+      },
+    ];
+    const offset = 18;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+      {
+        ...firstSentence,
+        length: 39,
+        sentence: "This is a sentence And this is one too.",
+      },
+    ]);
+  });
   it.skip("should handle pasting text", () => {});
   it.skip("should handle cutting text", () => {});
 });
