@@ -181,6 +181,7 @@ describe("updateSentences function", () => {
       },
     ]);
   });
+  it.skip("should handle merging two sentences from different paragraphs", () => {});
   it.skip("should handle pasting text", () => {});
   it.skip("should handle cutting text", () => {});
 });
