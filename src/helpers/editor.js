@@ -29,20 +29,24 @@ export function getEditorTextUpToSelection(editor) {
 export function getUpdatedSentences(editor, previousSentences) {
   const editorText = getEditorText(editor);
   const offset = getCurrentOffset(editor);
-  const newSentencesWithIds = sentencize(editorText);
+  const newSentences = sentencize(editorText);
 
+  return updateSentences(previousSentences, newSentences, offset);
+}
+
+export function updateSentences(previousSentences, newSentences, offset) {
   if (isEmpty(previousSentences)) {
-    return newSentencesWithIds;
+    return newSentences;
   }
 
-  const indexOfChangedSentence = newSentencesWithIds.findIndex((sentence) => {
+  const indexOfChangedSentence = newSentences.findIndex((sentence) => {
     const start = sentence.offset;
     const end = start + sentence.length;
     return start <= offset && offset <= end;
   });
 
   const previousSentence = previousSentences[indexOfChangedSentence];
-  const currentSentence = newSentencesWithIds[indexOfChangedSentence];
+  const currentSentence = newSentences[indexOfChangedSentence];
 
   const sentencesBeforeChange = previousSentences.slice(
     0,
@@ -56,7 +60,7 @@ export function getUpdatedSentences(editor, previousSentences) {
       }
     : currentSentence;
 
-  const sentencesAfterChange = newSentencesWithIds
+  const sentencesAfterChange = newSentences
     .slice(indexOfChangedSentence + 1)
     .map((sentence, i) => {
       const previous = previousSentences[indexOfChangedSentence + 1 + i];
