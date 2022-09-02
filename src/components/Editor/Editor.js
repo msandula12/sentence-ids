@@ -6,7 +6,11 @@ import "./Editor.css";
 
 import { getCurrentOperation, getUpdatedSentences } from "../../helpers/editor";
 
-const updatableOperations = new Set(["insert_text", "remove_text"]);
+const updatableOperations = new Set([
+  "insert_text",
+  "remove_text",
+  "split_node",
+]);
 
 const INITIAL_VALUE = [
   {

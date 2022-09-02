@@ -1,7 +1,44 @@
-import { Editor } from "slate";
+import { nanoid } from "nanoid";
+import { Editor, Element, Node } from "slate";
+import tokenizer from "sbd";
 
-import { sentencize } from "./sentencize";
 import { isEmptyList } from "../utils";
+
+/**
+ * Overrides sbd's default options.
+ * https://github.com/Tessmore/sbd
+ */
+const TOKENIZER_OPTIONS = {
+  preserve_whitespace: true,
+};
+
+export function convertNodesIntoBlocks(nodes) {
+  return nodes.map((el, blockIndex) => {
+    if (Element.isElement(el)) {
+      return el.children
+        .map((child) =>
+          tokenizer
+            .sentences(Node.string(child), TOKENIZER_OPTIONS)
+            .map((sentence) => ({
+              blockIndex,
+              sentence,
+            }))
+        )
+        .flat();
+    }
+    return tokenizer
+      .sentences(Node.string(el), TOKENIZER_OPTIONS)
+      .map((sentence) => ({
+        blockIndex,
+        sentence,
+      }));
+  });
+}
+
+export function getAllSentencesInEditor(editor) {
+  const blocks = convertNodesIntoBlocks(editor.children);
+  return blocks.flat().map((block) => block.sentence);
+}
 
 export function getCurrentOffset(editor) {
   return getEditorTextUpToSelection(editor).length;
@@ -27,9 +64,8 @@ export function getEditorTextUpToSelection(editor) {
 }
 
 export function getUpdatedSentences(editor, previousSentences) {
-  const editorText = getEditorText(editor);
+  const newSentences = sentencize(editor);
   const offset = getCurrentOffset(editor);
-  const newSentences = sentencize(editorText);
 
   return updateSentences(previousSentences, newSentences, offset);
 }
@@ -73,4 +109,21 @@ export function updateSentences(previousSentences, newSentences, offset) {
     });
 
   return [...sentencesBeforeChange, changedSentence, ...sentencesAfterChange];
+}
+
+export function sentencize(editor) {
+  let offset = 0;
+
+  const sentences = getAllSentencesInEditor(editor);
+
+  return sentences.map((sentence) => {
+    const sentencized = {
+      id: nanoid(),
+      length: sentence.length,
+      offset,
+      sentence,
+    };
+    offset += sentence.length;
+    return sentencized;
+  });
 }
