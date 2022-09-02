@@ -162,6 +162,14 @@ describe("updateSentences function", () => {
       firstSentence,
     ]);
   });
+  it("should handle deleting all the text", () => {
+    const previousSentences = [firstSentence, secondSentence];
+    const newSentences = INITIAL_STATE;
+    const offset = 0;
+    expect(updateSentences(previousSentences, newSentences, offset)).toEqual(
+      INITIAL_STATE
+    );
+  });
   it("should handle merging two sentences", () => {
     const previousSentences = [firstSentence, secondSentence];
     const newSentences = [

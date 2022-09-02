@@ -1,3 +1,3 @@
-export function isEmpty(list) {
-  return list.length === 1 && list[0] === [];
+export function isEmptyList(list) {
+  return !list || list.length === 0;
 }

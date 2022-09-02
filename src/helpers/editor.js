@@ -1,7 +1,7 @@
 import { Editor } from "slate";
 
 import { sentencize } from "./sentencize";
-import { isEmpty } from "../utils";
+import { isEmptyList } from "../utils";
 
 export function getCurrentOffset(editor) {
   return getEditorTextUpToSelection(editor).length;
@@ -35,7 +35,7 @@ export function getUpdatedSentences(editor, previousSentences) {
 }
 
 export function updateSentences(previousSentences, newSentences, offset) {
-  if (isEmpty(previousSentences)) {
+  if (isEmptyList(previousSentences) || isEmptyList(newSentences)) {
     return newSentences;
   }
 
