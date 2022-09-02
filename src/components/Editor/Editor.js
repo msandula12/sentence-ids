@@ -41,7 +41,11 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
       onChange={updateSentencesWithIds}
       value={INITIAL_EDITOR_VALUE}
     >
-      <Editable className="Editor" placeholder="Start typing here" />
+      <Editable
+        className="Editor"
+        placeholder="Start typing here"
+        spellCheck={false}
+      />
     </Slate>
   );
 };
