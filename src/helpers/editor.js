@@ -12,7 +12,7 @@ const TOKENIZER_OPTIONS = {
   preserve_whitespace: true,
 };
 
-export function convertNodesIntoBlocks(nodes) {
+function convertNodesIntoBlocks(nodes) {
   return nodes.map((el, blockIndex) => {
     if (Element.isElement(el)) {
       return el.children
@@ -35,12 +35,12 @@ export function convertNodesIntoBlocks(nodes) {
   });
 }
 
-export function getAllSentencesInEditor(editor) {
+function getAllSentencesInEditor(editor) {
   const blocks = convertNodesIntoBlocks(editor.children);
   return blocks.flat().map((block) => block.sentence);
 }
 
-export function getCurrentOffset(editor) {
+function getCurrentOffset(editor) {
   return getEditorTextUpToSelection(editor).length;
 }
 
@@ -48,11 +48,7 @@ export function getCurrentOperation(editor) {
   return editor.operations[editor.operations.length - 1];
 }
 
-export function getEditorText(editor) {
-  return Editor.string(editor, []);
-}
-
-export function getEditorTextUpToSelection(editor) {
+function getEditorTextUpToSelection(editor) {
   if (!editor.selection) return "";
   return Editor.string(editor, {
     anchor: {
@@ -111,7 +107,7 @@ export function updateSentences(previousSentences, newSentences, offset) {
   return [...sentencesBeforeChange, changedSentence, ...sentencesAfterChange];
 }
 
-export function sentencize(editor) {
+function sentencize(editor) {
   let offset = 0;
 
   const sentences = getAllSentencesInEditor(editor);
