@@ -1,5 +1,12 @@
 .App {
-  margin-inline: auto;
-  max-width: 800px;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+@media (min-width: 800px) {
+  .App {
+    flex-direction: row;
+  }
 }

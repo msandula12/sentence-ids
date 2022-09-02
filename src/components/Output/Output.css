@@ -1,5 +1,7 @@
 .Output {
     background-color: #eee;
-    border-radius: 0.25rem;
+    flex: 1;
+    overflow-y: auto;
     padding: 1rem;
+    white-space: pre-wrap;
 }
