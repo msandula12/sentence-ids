@@ -190,7 +190,7 @@ describe("updateSentences function", () => {
     ]);
   });
   it.skip("should handle merging two sentences from different paragraphs", () => {});
-  it("should handle pasting text", () => {
+  it("should handle pasting a small amount of text", () => {
     const previousSentences = [firstSentence];
     const newSentences = [
       {
@@ -209,7 +209,9 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it("should handle cutting text", () => {
+  it.skip("should handle pasting sentences of text", () => {});
+  it.skip("should handle cutting sentences of text", () => {});
+  it("should handle cutting a small amount of text", () => {
     const previousSentences = [
       {
         ...firstSentence,
