@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
 
 import "./Editor.css";
 
 import { getCurrentOperation, getUpdatedSentences } from "helpers/editor";
+
+import DefaultElement from "./DefaultElement";
 
 const updatableOperations = new Set([
   "insert_text",
@@ -22,6 +24,11 @@ const INITIAL_EDITOR_VALUE = [
 ];
 
 const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
+  // Callbacks
+  const renderElement = useCallback((props) => {
+    return <DefaultElement {...props} />;
+  }, []);
+
   // Editor
   const [editor] = useState(() => withReact(createEditor()));
 
@@ -44,6 +51,7 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
       <Editable
         className="Editor"
         placeholder="Start typing here"
+        renderElement={renderElement}
         spellCheck={false}
       />
     </Slate>
