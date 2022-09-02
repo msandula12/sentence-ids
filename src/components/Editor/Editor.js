@@ -14,7 +14,7 @@ const updatableOperations = new Set([
   "split_node",
 ]);
 
-const INITIAL_VALUE = [
+const INITIAL_EDITOR_VALUE = [
   {
     children: [{ text: "" }],
     type: "paragraph",
@@ -39,7 +39,7 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
     <Slate
       editor={editor}
       onChange={updateSentencesWithIds}
-      value={INITIAL_VALUE}
+      value={INITIAL_EDITOR_VALUE}
     >
       <Editable className="Editor" placeholder="Start typing here" />
     </Slate>
