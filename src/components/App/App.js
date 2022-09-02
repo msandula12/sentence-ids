@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import Editor from "../Editor";
-import Output from "../Output";
+import Editor from "components/Editor";
+import Output from "components/Output";
 
 import "./App.css";
 

@@ -4,7 +4,7 @@ import { Editable, Slate, withReact } from "slate-react";
 
 import "./Editor.css";
 
-import { getCurrentOperation, getUpdatedSentences } from "../../helpers/editor";
+import { getCurrentOperation, getUpdatedSentences } from "helpers/editor";
 
 const updatableOperations = new Set([
   "insert_text",

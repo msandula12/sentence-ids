@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { Editor, Element, Node } from "slate";
 import tokenizer from "sbd";
 
-import { isEmptyList } from "../utils";
+import { isEmptyList } from "utils";
 
 /**
  * Overrides sbd's default options.
