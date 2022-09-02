@@ -8,6 +8,8 @@ import { getCurrentOperation, getUpdatedSentences } from "../../helpers/editor";
 
 const updatableOperations = new Set([
   "insert_text",
+  "merge_node",
+  "remove_node",
   "remove_text",
   "split_node",
 ]);
@@ -24,10 +26,12 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   const [editor] = useState(() => withReact(createEditor()));
 
   const updateSentencesWithIds = () => {
-    const operation = getCurrentOperation(editor);
-    if (updatableOperations.has(operation.type)) {
+    const { type } = getCurrentOperation(editor);
+    if (updatableOperations.has(type)) {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
+    } else {
+      console.log(`Operation "${type}" is not currently handled.`);
     }
   };
 
