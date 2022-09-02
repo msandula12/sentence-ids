@@ -31,7 +31,7 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
     } else {
-      console.log(`Operation "${type}" is not currently handled.`);
+      console.log(`"${type}" is not an updatable operation.`);
     }
   };
 
