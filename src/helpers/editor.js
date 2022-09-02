@@ -96,7 +96,7 @@ export function updateSentences(previousSentences, newSentences, offset) {
     .slice(indexOfChangedSentence + 1)
     .map((sentence, i) => {
       const previous = previousSentences[indexOfChangedSentence + 1 + i];
-      return previousSentence
+      return previous
         ? {
             ...sentence,
             id: previous.id,
