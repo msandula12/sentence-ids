@@ -8,13 +8,20 @@ import "./App.css";
 const App = () => {
   const [sentencesWithIds, setSentencesWithIds] = useState([]);
 
+  const changedSentences = sentencesWithIds.filter(
+    (sentence) => sentence.isDirty
+  );
+
   return (
     <main className="App">
       <Editor
         sentencesWithIds={sentencesWithIds}
         setSentencesWithIds={setSentencesWithIds}
       />
-      <Output sentencesWithIds={sentencesWithIds} />
+      <Output
+        changedSentences={changedSentences}
+        sentencesWithIds={sentencesWithIds}
+      />
     </main>
   );
 };

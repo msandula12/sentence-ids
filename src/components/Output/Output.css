@@ -1,6 +1,24 @@
 .Output {
     background-color: #eee;
     flex: 1;
+}
+
+.Output-Tabs {
+    display: flex;
+}
+
+.Output-Tab {
+    cursor: pointer;
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+}
+
+.Output-Tab:not(.active) {
+   background-color: #ccc;
+}
+
+.Output-Content {
     overflow-y: auto;
     padding: 1rem;
     white-space: pre-wrap;
