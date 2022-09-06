@@ -229,8 +229,91 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it.skip("should handle pasting sentences of text", () => {});
-  it.skip("should handle cutting sentences of text", () => {});
+  it("should handle pasting sentences of text", () => {
+    const previousSentences = [firstSentence, secondSentence];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+      },
+      {
+        id: "some-unique-id-2b",
+        length: 34,
+        offset: 20,
+        sentence: "This sentence was just pasted in. ",
+      },
+      {
+        id: "some-unique-id-3b",
+        length: 20,
+        offset: 54,
+        sentence: " And so was this one.",
+      },
+      {
+        ...secondSentence,
+        id: "some-unique-id-4b",
+        offset: 74,
+      },
+    ];
+    const offset = 74;
+    const lengthOfUpdate = 54;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
+      firstSentence,
+      {
+        id: "some-unique-id-2b",
+        length: 34,
+        offset: 20,
+        sentence: "This sentence was just pasted in. ",
+      },
+      {
+        id: "some-unique-id-3b",
+        length: 20,
+        offset: 54,
+        sentence: " And so was this one.",
+      },
+      {
+        ...secondSentence,
+        offset: 74,
+      },
+    ]);
+  });
+  it("should handle cutting sentences of text", () => {
+    const previousSentences = [
+      firstSentence,
+      {
+        id: "some-unique-id-2a",
+        length: 34,
+        offset: 20,
+        sentence: "This sentence was just pasted in. ",
+      },
+      {
+        id: "some-unique-id-3a",
+        length: 20,
+        offset: 54,
+        sentence: " And so was this one.",
+      },
+      {
+        ...secondSentence,
+        offset: 74,
+      },
+    ];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+      },
+      {
+        ...secondSentence,
+        id: "some-unique-id-2b",
+      },
+    ];
+    const offset = 20;
+    const lengthOfUpdate = 0;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([firstSentence, secondSentence]);
+  });
   it("should handle cutting a small amount of text", () => {
     const previousSentences = [
       {

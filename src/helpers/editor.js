@@ -93,15 +93,16 @@ export function updateSentences(
   const indexOfChange = newSentences.findIndex((sentence) => {
     const start = sentence.offset;
     const end = start + sentence.length;
-    return start <= offset && offset <= end;
+    const startOfUpdate = offset - Math.abs(lengthOfUpdate);
+    return start <= startOfUpdate && startOfUpdate < end;
   });
 
-  // These sentences were before the update, so leave them intact
   const untouchedSentences = previousSentences.slice(0, indexOfChange);
+  const previousSentencesAfterUpdate = previousSentences.slice(indexOfChange);
 
   const touchedSentences = newSentences.slice(indexOfChange).map((sentence) => {
     // The sentence didn't change, but it was shifted so return the previous sentence with the new offset
-    const shiftedSentence = previousSentences.slice(indexOfChange).find((s) => {
+    const shiftedSentence = previousSentencesAfterUpdate.find((s) => {
       return (
         s.length === sentence.length &&
         s.offset === sentence.offset - lengthOfUpdate &&
@@ -117,7 +118,7 @@ export function updateSentences(
     }
 
     // The sentence changed so return the new sentence with the previous ID
-    const touchedSentence = previousSentences.slice(indexOfChange).find((s) => {
+    const touchedSentence = previousSentencesAfterUpdate.find((s) => {
       const start = s.offset;
       const end = start + sentence.length;
       return start <= offset - lengthOfUpdate && offset <= end;
