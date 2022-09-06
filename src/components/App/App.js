@@ -9,13 +9,13 @@ const App = () => {
   const [sentencesWithIds, setSentencesWithIds] = useState([]);
 
   return (
-    <div className="App">
+    <main className="App">
       <Editor
         sentencesWithIds={sentencesWithIds}
         setSentencesWithIds={setSentencesWithIds}
       />
       <Output sentencesWithIds={sentencesWithIds} />
-    </div>
+    </main>
   );
 };
 
