@@ -131,7 +131,6 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it.skip("should handle multiple paragraphs", () => {});
   it("should handle deleting a single character", () => {
     const previousSentences = [firstSentence];
     const newSentences = [
