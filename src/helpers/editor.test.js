@@ -37,7 +37,12 @@ describe("updateSentences function", () => {
     const lengthOfUpdate = 1;
     expect(
       updateSentences(INITIAL_STATE, newSentences, offset, lengthOfUpdate)
-    ).toEqual(newSentences);
+    ).toEqual([
+      {
+        ...partialSentence,
+        isDirty: true,
+      },
+    ]);
   });
   it("should keep previous ID when updating existing sentence", () => {
     const previousSentences = [partialSentence];
@@ -56,6 +61,7 @@ describe("updateSentences function", () => {
     ).toEqual([
       {
         ...partialSentence,
+        isDirty: true,
         length: 2,
         sentence: "Th",
       },
@@ -74,7 +80,13 @@ describe("updateSentences function", () => {
     const lengthOfUpdate = 20;
     expect(
       updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
-    ).toEqual([firstSentence, secondSentence]);
+    ).toEqual([
+      firstSentence,
+      {
+        ...secondSentence,
+        isDirty: true,
+      },
+    ]);
   });
   it("should keep sentences before offset intact", () => {
     const previousSentences = [firstSentence, secondSentence];
@@ -98,6 +110,7 @@ describe("updateSentences function", () => {
       firstSentence,
       {
         ...secondSentence,
+        isDirty: true,
         length: 21,
         sentence: "Andd this is one too.",
       },
@@ -125,6 +138,7 @@ describe("updateSentences function", () => {
     ).toEqual([
       {
         ...firstSentence,
+        isDirty: true,
         length: 21,
         sentence: "This is an sentence. ",
       },
@@ -151,6 +165,7 @@ describe("updateSentences function", () => {
     ).toEqual([
       {
         ...firstSentence,
+        isDirty: true,
         length: 19,
         sentence: "Thi is a sentence. ",
       },
@@ -205,6 +220,7 @@ describe("updateSentences function", () => {
     ).toEqual([
       {
         ...firstSentence,
+        isDirty: true,
         length: 39,
         sentence: "This is a sentence And this is one too.",
       },
@@ -227,6 +243,7 @@ describe("updateSentences function", () => {
     ).toEqual([
       {
         ...firstSentence,
+        isDirty: true,
         length: 24,
         sentence: "This is a new sentence. ",
       },
@@ -267,14 +284,14 @@ describe("updateSentences function", () => {
       firstSentence,
       {
         id: "some-unique-id-2b",
-        isDirty: false,
+        isDirty: true,
         length: 34,
         offset: 20,
         sentence: "This sentence was just pasted in. ",
       },
       {
         id: "some-unique-id-3b",
-        isDirty: false,
+        isDirty: true,
         length: 20,
         offset: 54,
         sentence: " And so was this one.",
@@ -282,6 +299,31 @@ describe("updateSentences function", () => {
       {
         ...secondSentence,
         offset: 74,
+      },
+    ]);
+  });
+  it("should handle cutting a small amount of text", () => {
+    const previousSentences = [
+      {
+        ...firstSentence,
+        length: 24,
+        sentence: "This is a new sentence. ",
+      },
+    ];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+      },
+    ];
+    const offset = 10;
+    const lengthOfUpdate = -4;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
+      {
+        ...firstSentence,
+        isDirty: true,
       },
     ]);
   });
@@ -304,6 +346,7 @@ describe("updateSentences function", () => {
       },
       {
         ...secondSentence,
+        id: "some-unique-id-4a",
         offset: 74,
       },
     ];
@@ -318,29 +361,15 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 20;
-    const lengthOfUpdate = 0;
+    const lengthOfUpdate = -54;
     expect(
       updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
-    ).toEqual([firstSentence, secondSentence]);
-  });
-  it("should handle cutting a small amount of text", () => {
-    const previousSentences = [
+    ).toEqual([
+      firstSentence,
       {
-        ...firstSentence,
-        length: 24,
-        sentence: "This is a new sentence. ",
+        ...secondSentence,
+        id: "some-unique-id-4a",
       },
-    ];
-    const newSentences = [
-      {
-        ...firstSentence,
-        id: "some-unique-id-1b",
-      },
-    ];
-    const offset = 10;
-    const lengthOfUpdate = -4;
-    expect(
-      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
-    ).toEqual([firstSentence]);
+    ]);
   });
 });

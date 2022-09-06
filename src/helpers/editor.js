@@ -87,15 +87,26 @@ export function updateSentences(
   lengthOfUpdate = 0
 ) {
   if (isEmptyList(previousSentences) || isEmptyList(newSentences)) {
-    return newSentences;
+    return newSentences.map((sentence) => ({
+      ...sentence,
+      isDirty: true,
+    }));
   }
 
-  const indexOfChange = newSentences.findIndex((sentence) => {
+  let indexOfChange = newSentences.findIndex((sentence) => {
     const start = sentence.offset;
     const end = start + sentence.length;
     const startOfUpdate = offset - Math.abs(lengthOfUpdate);
-    return start <= startOfUpdate && startOfUpdate < end;
+    const endOfUpdate = offset - lengthOfUpdate;
+    return start <= startOfUpdate && endOfUpdate < end;
   });
+
+  if (indexOfChange === -1) {
+    indexOfChange =
+      previousSentences.length < newSentences.length
+        ? previousSentences.length
+        : newSentences.length;
+  }
 
   const untouchedSentences = previousSentences.slice(0, indexOfChange);
   const previousSentencesAfterUpdate = previousSentences.slice(indexOfChange);
@@ -128,11 +139,15 @@ export function updateSentences(
       return {
         ...sentence,
         id: touchedSentence.id,
+        isDirty: true,
       };
     }
 
     // Sentence is new, so return as-is
-    return sentence;
+    return {
+      ...sentence,
+      isDirty: true,
+    };
   });
 
   return [...untouchedSentences, ...touchedSentences];
