@@ -146,6 +146,7 @@ function sentencize(editor) {
   return sentences.map((sentence) => {
     const sentencized = {
       id: nanoid(),
+      isDirty: false,
       length: sentence.length,
       offset,
       sentence,

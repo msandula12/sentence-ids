@@ -8,6 +8,7 @@ const INITIAL_STATE = [];
 
 const partialSentence = {
   id: "some-unique-id-1a",
+  isDirty: false,
   length: 1,
   offset: 0,
   sentence: "T",
@@ -15,6 +16,7 @@ const partialSentence = {
 
 const firstSentence = {
   id: "some-unique-id-1a",
+  isDirty: false,
   length: 20,
   offset: 0,
   sentence: "This is a sentence. ",
@@ -22,6 +24,7 @@ const firstSentence = {
 
 const secondSentence = {
   id: "some-unique-id-2a",
+  isDirty: false,
   length: 20,
   offset: 20,
   sentence: "And this is one too.",
@@ -158,6 +161,7 @@ describe("updateSentences function", () => {
       firstSentence,
       {
         id: "some-unique-id-2a",
+        isDirty: false,
         length: 1,
         offset: 20,
         sentence: "A",
@@ -237,12 +241,14 @@ describe("updateSentences function", () => {
       },
       {
         id: "some-unique-id-2b",
+        isDirty: false,
         length: 34,
         offset: 20,
         sentence: "This sentence was just pasted in. ",
       },
       {
         id: "some-unique-id-3b",
+        isDirty: false,
         length: 20,
         offset: 54,
         sentence: " And so was this one.",
@@ -261,12 +267,14 @@ describe("updateSentences function", () => {
       firstSentence,
       {
         id: "some-unique-id-2b",
+        isDirty: false,
         length: 34,
         offset: 20,
         sentence: "This sentence was just pasted in. ",
       },
       {
         id: "some-unique-id-3b",
+        isDirty: false,
         length: 20,
         offset: 54,
         sentence: " And so was this one.",
@@ -282,12 +290,14 @@ describe("updateSentences function", () => {
       firstSentence,
       {
         id: "some-unique-id-2a",
+        isDirty: false,
         length: 34,
         offset: 20,
         sentence: "This sentence was just pasted in. ",
       },
       {
         id: "some-unique-id-3a",
+        isDirty: false,
         length: 20,
         offset: 54,
         sentence: " And so was this one.",
