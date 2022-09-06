@@ -206,7 +206,6 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it.skip("should handle merging two sentences from different paragraphs", () => {});
   it("should handle pasting a small amount of text", () => {
     const previousSentences = [firstSentence];
     const newSentences = [
