@@ -62,49 +62,79 @@ function getEditorTextUpToSelection(editor) {
 export function getUpdatedSentences(editor, previousSentences) {
   const newSentences = sentencize(editor);
   const offset = getCurrentOffset(editor);
+  const { text, type } = getCurrentOperation(editor);
 
-  return updateSentences(previousSentences, newSentences, offset);
+  let lengthOfUpdate = 0;
+
+  if (type === "insert_text") {
+    lengthOfUpdate = text.length;
+  } else if (type === "remove_text") {
+    lengthOfUpdate = -text.length;
+  }
+
+  return updateSentences(
+    previousSentences,
+    newSentences,
+    offset,
+    lengthOfUpdate
+  );
 }
 
-export function updateSentences(previousSentences, newSentences, offset) {
+export function updateSentences(
+  previousSentences,
+  newSentences,
+  offset,
+  lengthOfUpdate = 0
+) {
   if (isEmptyList(previousSentences) || isEmptyList(newSentences)) {
     return newSentences;
   }
 
-  const indexOfChangedSentence = newSentences.findIndex((sentence) => {
+  const indexOfChange = newSentences.findIndex((sentence) => {
     const start = sentence.offset;
     const end = start + sentence.length;
     return start <= offset && offset <= end;
   });
 
-  const previousSentence = previousSentences[indexOfChangedSentence];
-  const currentSentence = newSentences[indexOfChangedSentence];
+  // These sentences were before the update, so leave them intact
+  const untouchedSentences = previousSentences.slice(0, indexOfChange);
 
-  const sentencesBeforeChange = previousSentences.slice(
-    0,
-    indexOfChangedSentence
-  );
-
-  const changedSentence = previousSentence
-    ? {
-        ...currentSentence,
-        id: previousSentence.id,
-      }
-    : currentSentence;
-
-  const sentencesAfterChange = newSentences
-    .slice(indexOfChangedSentence + 1)
-    .map((sentence, i) => {
-      const previous = previousSentences[indexOfChangedSentence + 1 + i];
-      return previous
-        ? {
-            ...sentence,
-            id: previous.id,
-          }
-        : sentence;
+  const touchedSentences = newSentences.slice(indexOfChange).map((sentence) => {
+    // The sentence didn't change, but it was shifted so return the previous sentence with the new offset
+    const shiftedSentence = previousSentences.slice(indexOfChange).find((s) => {
+      return (
+        s.length === sentence.length &&
+        s.offset === sentence.offset - lengthOfUpdate &&
+        s.text === sentence.text
+      );
     });
 
-  return [...sentencesBeforeChange, changedSentence, ...sentencesAfterChange];
+    if (shiftedSentence) {
+      return {
+        ...shiftedSentence,
+        offset: sentence.offset,
+      };
+    }
+
+    // The sentence changed so return the new sentence with the previous ID
+    const touchedSentence = previousSentences.slice(indexOfChange).find((s) => {
+      const start = s.offset;
+      const end = start + sentence.length;
+      return start <= offset - lengthOfUpdate && offset <= end;
+    });
+
+    if (touchedSentence) {
+      return {
+        ...sentence,
+        id: touchedSentence.id,
+      };
+    }
+
+    // Sentence is new, so return as-is
+    return sentence;
+  });
+
+  return [...untouchedSentences, ...touchedSentences];
 }
 
 function sentencize(editor) {

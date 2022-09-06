@@ -31,9 +31,10 @@ describe("updateSentences function", () => {
   it("should return new sentences if no previous sentences", () => {
     const newSentences = [partialSentence];
     const offset = 1;
-    expect(updateSentences(INITIAL_STATE, newSentences, offset)).toEqual(
-      newSentences
-    );
+    const lengthOfUpdate = 1;
+    expect(
+      updateSentences(INITIAL_STATE, newSentences, offset, lengthOfUpdate)
+    ).toEqual(newSentences);
   });
   it("should keep previous ID when updating existing sentence", () => {
     const previousSentences = [partialSentence];
@@ -46,7 +47,10 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 2;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+    const lengthOfUpdate = 1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
       {
         ...partialSentence,
         length: 2,
@@ -64,10 +68,10 @@ describe("updateSentences function", () => {
       secondSentence,
     ];
     const offset = 40;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
-      firstSentence,
-      secondSentence,
-    ]);
+    const lengthOfUpdate = 20;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([firstSentence, secondSentence]);
   });
   it("should keep sentences before offset intact", () => {
     const previousSentences = [firstSentence, secondSentence];
@@ -84,7 +88,10 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 24;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+    const lengthOfUpdate = 1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
       firstSentence,
       {
         ...secondSentence,
@@ -93,7 +100,7 @@ describe("updateSentences function", () => {
       },
     ]);
   });
-  it("should keep update sentences after offset, but keep previous IDs", () => {
+  it("should keep updated sentences after offset, but keep previous IDs", () => {
     const previousSentences = [firstSentence, secondSentence];
     const newSentences = [
       {
@@ -109,7 +116,10 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 10;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+    const lengthOfUpdate = 1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
       {
         ...firstSentence,
         length: 21,
@@ -133,7 +143,10 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 3;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+    const lengthOfUpdate = -1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
       {
         ...firstSentence,
         length: 19,
@@ -158,17 +171,19 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 20;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
-      firstSentence,
-    ]);
+    const lengthOfUpdate = -1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([firstSentence]);
   });
   it("should handle deleting all the text", () => {
     const previousSentences = [firstSentence, secondSentence];
     const newSentences = INITIAL_STATE;
     const offset = 0;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual(
-      INITIAL_STATE
-    );
+    const lengthOfUpdate = 0;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual(INITIAL_STATE);
   });
   it("should handle merging two sentences", () => {
     const previousSentences = [firstSentence, secondSentence];
@@ -181,7 +196,10 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 18;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+    const lengthOfUpdate = -1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
       {
         ...firstSentence,
         length: 39,
@@ -201,7 +219,10 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 10;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
+    const lengthOfUpdate = 4;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
       {
         ...firstSentence,
         length: 24,
@@ -226,8 +247,9 @@ describe("updateSentences function", () => {
       },
     ];
     const offset = 10;
-    expect(updateSentences(previousSentences, newSentences, offset)).toEqual([
-      firstSentence,
-    ]);
+    const lengthOfUpdate = -4;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([firstSentence]);
   });
 });
