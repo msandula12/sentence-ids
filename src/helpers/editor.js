@@ -93,19 +93,34 @@ export function updateSentences(
     }));
   }
 
-  let indexOfChange = newSentences.findIndex((sentence) => {
-    const start = sentence.offset;
-    const end = start + sentence.length;
-    const startOfUpdate = offset - Math.abs(lengthOfUpdate);
-    const endOfUpdate = offset - lengthOfUpdate;
-    return start <= startOfUpdate && endOfUpdate < end;
-  });
+  let indexOfChange = -1;
 
-  if (indexOfChange === -1) {
-    indexOfChange =
-      previousSentences.length < newSentences.length
-        ? previousSentences.length
-        : newSentences.length;
+  for (
+    let i = 0;
+    i < Math.max(previousSentences.length, newSentences.length);
+    i++
+  ) {
+    const previous = previousSentences[i];
+    const current = newSentences[i];
+    if (previous && current) {
+      if (
+        previous.length === current.length &&
+        previous.offset === current.offset &&
+        previous.sentence === current.sentence
+      ) {
+        indexOfChange = i;
+      } else {
+        if (indexOfChange === -1) {
+          indexOfChange = 0;
+        } else {
+          indexOfChange++;
+        }
+        break;
+      }
+    } else {
+      indexOfChange = i;
+      break;
+    }
   }
 
   const untouchedSentences = previousSentences.slice(0, indexOfChange);
