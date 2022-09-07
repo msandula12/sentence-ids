@@ -4,18 +4,11 @@ import { Editable, Slate, withReact } from "slate-react";
 
 import "./Editor.css";
 
+import { updatableOperations } from "constants";
 import { getCurrentOperation, getUpdatedSentences } from "helpers/editor";
-import { debounce } from "utils";
 
 import DefaultElement from "./DefaultElement";
-
-const updatableOperations = new Set([
-  "insert_text",
-  "merge_node",
-  "remove_node",
-  "remove_text",
-  "split_node",
-]);
+import { withState } from "./withState";
 
 const INITIAL_EDITOR_VALUE = [
   {
@@ -31,26 +24,15 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   }, []);
 
   // Editor
-  const [editor] = useState(() => withReact(createEditor()));
-
-  const resetIsDirty = () => {
-    console.log(`%cRESET IS DIRTY`, "color:blue");
-    setSentencesWithIds((previousSentences) =>
-      previousSentences.map((sentence) => ({
-        ...sentence,
-        isDirty: false,
-      }))
-    );
-  };
-
-  const resetIsDirtyDebounced = debounce(resetIsDirty, 1500);
+  const [editor] = useState(() =>
+    withState(withReact(createEditor()), setSentencesWithIds)
+  );
 
   const updateSentencesWithIds = () => {
     const { type } = getCurrentOperation(editor);
     if (updatableOperations.has(type)) {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
-      resetIsDirtyDebounced();
     } else {
       console.log(`"${type}" is not an updatable operation.`);
     }
