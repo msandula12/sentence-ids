@@ -5,6 +5,7 @@ import { Editable, Slate, withReact } from "slate-react";
 import "./Editor.css";
 
 import { getCurrentOperation, getUpdatedSentences } from "helpers/editor";
+import { debounce } from "utils";
 
 import DefaultElement from "./DefaultElement";
 
@@ -32,6 +33,16 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   // Editor
   const [editor] = useState(() => withReact(createEditor()));
 
+  const fakeApiCall = debounce(() => {
+    console.log(`%cMAKE API CALL`, "color:blue");
+    setSentencesWithIds((previousSentences) =>
+      previousSentences.map((sentence) => ({
+        ...sentence,
+        isDirty: false,
+      }))
+    );
+  }, 1500);
+
   const updateSentencesWithIds = () => {
     const { type } = getCurrentOperation(editor);
     if (updatableOperations.has(type)) {
@@ -42,10 +53,15 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
     }
   };
 
+  const handleOnChange = () => {
+    updateSentencesWithIds();
+    fakeApiCall();
+  };
+
   return (
     <Slate
       editor={editor}
-      onChange={updateSentencesWithIds}
+      onChange={handleOnChange}
       value={INITIAL_EDITOR_VALUE}
     >
       <Editable
