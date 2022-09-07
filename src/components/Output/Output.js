@@ -15,7 +15,7 @@ const Output = ({ changedSentences, sentencesWithIds }) => {
           }`}
           onClick={() => setActiveOutput("sentencesWithIds")}
         >
-          sentencesWithIds
+          All sentences
         </div>
         <div
           className={`Output-Tab ${
@@ -23,7 +23,7 @@ const Output = ({ changedSentences, sentencesWithIds }) => {
           }`}
           onClick={() => setActiveOutput("changedSentences")}
         >
-          changedSentences
+          Changed only
         </div>
       </div>
       <div className="Output-Content">
