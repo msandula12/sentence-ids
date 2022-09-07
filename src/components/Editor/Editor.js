@@ -33,7 +33,7 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   // Editor
   const [editor] = useState(() => withReact(createEditor()));
 
-  const fakeApiCall = debounce(() => {
+  const fakeApiCall = () => {
     console.log(`%cMAKE API CALL`, "color:blue");
     setSentencesWithIds((previousSentences) =>
       previousSentences.map((sentence) => ({
@@ -41,27 +41,25 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
         isDirty: false,
       }))
     );
-  }, 1500);
+  };
+
+  const fakeApiCallDebounced = debounce(fakeApiCall, 1500);
 
   const updateSentencesWithIds = () => {
     const { type } = getCurrentOperation(editor);
     if (updatableOperations.has(type)) {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
+      fakeApiCallDebounced();
     } else {
       console.log(`"${type}" is not an updatable operation.`);
     }
   };
 
-  const handleOnChange = () => {
-    updateSentencesWithIds();
-    fakeApiCall();
-  };
-
   return (
     <Slate
       editor={editor}
-      onChange={handleOnChange}
+      onChange={updateSentencesWithIds}
       value={INITIAL_EDITOR_VALUE}
     >
       <Editable
