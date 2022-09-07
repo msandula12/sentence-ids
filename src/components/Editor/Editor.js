@@ -33,8 +33,8 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
   // Editor
   const [editor] = useState(() => withReact(createEditor()));
 
-  const fakeApiCall = () => {
-    console.log(`%cMAKE API CALL`, "color:blue");
+  const resetIsDirty = () => {
+    console.log(`%cRESET IS DIRTY`, "color:blue");
     setSentencesWithIds((previousSentences) =>
       previousSentences.map((sentence) => ({
         ...sentence,
@@ -43,14 +43,14 @@ const Editor = ({ sentencesWithIds, setSentencesWithIds }) => {
     );
   };
 
-  const fakeApiCallDebounced = debounce(fakeApiCall, 1500);
+  const resetIsDirtyDebounced = debounce(resetIsDirty, 1500);
 
   const updateSentencesWithIds = () => {
     const { type } = getCurrentOperation(editor);
     if (updatableOperations.has(type)) {
       const updatedSentences = getUpdatedSentences(editor, sentencesWithIds);
       setSentencesWithIds(updatedSentences);
-      fakeApiCallDebounced();
+      resetIsDirtyDebounced();
     } else {
       console.log(`"${type}" is not an updatable operation.`);
     }
