@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { Editor, Element, Node } from "slate";
 import tokenizer from "sbd";
 
-import { isEmptyList } from "utils";
+import { isEmptyList, isEqualBy } from "utils";
 
 /**
  * Overrides sbd's default options.
@@ -103,11 +103,7 @@ export function updateSentences(
     const previous = previousSentences[i];
     const current = newSentences[i];
     if (previous && current) {
-      if (
-        previous.length === current.length &&
-        previous.offset === current.offset &&
-        previous.sentence === current.sentence
-      ) {
+      if (isEqualBy(previous, current, "length", "offset", "sentence")) {
         indexOfChange = i;
       } else {
         if (indexOfChange === -1) {
@@ -130,9 +126,8 @@ export function updateSentences(
     // The sentence didn't change, but it was shifted so return the previous sentence with the new offset
     const shiftedSentence = previousSentencesAfterUpdate.find((s) => {
       return (
-        s.length === sentence.length &&
-        s.offset === sentence.offset - lengthOfUpdate &&
-        s.text === sentence.text
+        isEqualBy(s, sentence, "length", "text") &&
+        s.offset === sentence.offset - lengthOfUpdate
       );
     });
 
