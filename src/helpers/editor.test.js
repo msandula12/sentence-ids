@@ -372,4 +372,41 @@ describe("updateSentences function", () => {
       },
     ]);
   });
+  it("should handle splitting an existing sentence into two", () => {
+    const previousSentences = [firstSentence];
+    const newSentences = [
+      {
+        ...firstSentence,
+        id: "some-unique-id-1b",
+        length: 9,
+        sentence: "This is. ",
+      },
+      {
+        id: "some-unique-id-2b",
+        isDirty: false,
+        length: 12,
+        offset: 9,
+        sentence: "a sentence. ",
+      },
+    ];
+    const offset = 9;
+    const lengthOfUpdate = 1;
+    expect(
+      updateSentences(previousSentences, newSentences, offset, lengthOfUpdate)
+    ).toEqual([
+      {
+        ...firstSentence,
+        isDirty: true,
+        length: 9,
+        sentence: "This is. ",
+      },
+      {
+        id: "some-unique-id-2b",
+        isDirty: true,
+        length: 12,
+        offset: 9,
+        sentence: "a sentence. ",
+      },
+    ]);
+  });
 });

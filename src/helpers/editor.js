@@ -124,7 +124,7 @@ export function updateSentences(
   }
 
   const untouchedSentences = previousSentences.slice(0, indexOfChange);
-  const previousSentencesAfterUpdate = previousSentences.slice(indexOfChange);
+  let previousSentencesAfterUpdate = previousSentences.slice(indexOfChange);
 
   const touchedSentences = newSentences.slice(indexOfChange).map((sentence) => {
     // The sentence didn't change, but it was shifted so return the previous sentence with the new offset
@@ -137,6 +137,10 @@ export function updateSentences(
     });
 
     if (shiftedSentence) {
+      // Remove sentence from list so it isn't found again
+      previousSentencesAfterUpdate = previousSentencesAfterUpdate.filter(
+        (s) => s.id !== shiftedSentence.id
+      );
       return {
         ...shiftedSentence,
         offset: sentence.offset,
@@ -151,6 +155,10 @@ export function updateSentences(
     });
 
     if (touchedSentence) {
+      // Remove sentence from list so it isn't found again
+      previousSentencesAfterUpdate = previousSentencesAfterUpdate.filter(
+        (s) => s.id !== touchedSentence.id
+      );
       return {
         ...sentence,
         id: touchedSentence.id,
