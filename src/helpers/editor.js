@@ -59,18 +59,21 @@ function getEditorTextUpToSelection(editor) {
   });
 }
 
-export function getUpdatedSentences(editor, previousSentences) {
-  const newSentences = sentencize(editor);
-  const offset = getCurrentOffset(editor);
+function getLengthOfUpdate(editor) {
   const { text, type } = getCurrentOperation(editor);
-
   let lengthOfUpdate = 0;
-
   if (type === "insert_text") {
     lengthOfUpdate = text.length;
   } else if (type === "remove_text") {
     lengthOfUpdate = -text.length;
   }
+  return lengthOfUpdate;
+}
+
+export function getUpdatedSentences(editor, previousSentences) {
+  const newSentences = sentencize(editor);
+  const offset = getCurrentOffset(editor);
+  const lengthOfUpdate = getLengthOfUpdate(editor);
 
   return updateSentences(
     previousSentences,
